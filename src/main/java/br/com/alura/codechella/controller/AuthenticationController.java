@@ -1,8 +1,8 @@
 package br.com.alura.codechella.controller;
 
-import br.com.alura.codechella.domain.autenticacao.entity.Usuario;
-import br.com.alura.codechella.domain.autenticacao.vo.DadosParaAutenticacao;
-import br.com.alura.codechella.domain.autenticacao.vo.DadosTokenJwt;
+import br.com.alura.codechella.domain.authentication.entity.User;
+import br.com.alura.codechella.domain.authentication.vo.AuthenticationData;
+import br.com.alura.codechella.domain.authentication.vo.JwtTokenData;
 import br.com.alura.codechella.infra.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,24 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("auth")
-public class AutenticacaoController {
+public class AuthenticationController {
 
     private final AuthenticationManager manager;
     private final TokenService tokenService;
 
-    public AutenticacaoController(AuthenticationManager manager, TokenService tokenService) {
+    public AuthenticationController(AuthenticationManager manager, TokenService tokenService) {
         this.manager = manager;
         this.tokenService = tokenService;
     }
 
     @PostMapping
-    public ResponseEntity<DadosTokenJwt> efetuarLogin(@RequestBody @Valid DadosParaAutenticacao dados) {
-        var authenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
+    public ResponseEntity<JwtTokenData> login(@RequestBody @Valid AuthenticationData data) {
+        var authenticationToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var authentication = manager.authenticate(authenticationToken);
 
-        var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+        var jwtToken = tokenService.generateToken((User) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new DadosTokenJwt("Bearer", tokenJWT));
+        return ResponseEntity.ok(new JwtTokenData("Bearer", jwtToken));
     }
 
 }
