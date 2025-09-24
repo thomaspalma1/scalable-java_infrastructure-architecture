@@ -1,6 +1,6 @@
 package br.com.alura.codechella.infra.security;
 
-import br.com.alura.codechella.domain.autenticacao.entity.Usuario;
+import br.com.alura.codechella.domain.authentication.entity.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -23,35 +23,35 @@ public class TokenService {
         this.secret = secret;
     }
 
-    public String gerarToken(Usuario usuario) {
+    public String generateToken(User user) {
         try {
-            var algoritmo = Algorithm.HMAC256(secret);
+            var algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer(ISSUER)
-                    .withSubject(usuario.getEmail())
-                    .withClaim("id", usuario.getId())
-                    .withClaim("nome", usuario.getNome())
-                    .withExpiresAt(dataExpiracao())
-                    .sign(algoritmo);
+                    .withSubject(user.getEmail())
+                    .withClaim("id", user.getId())
+                    .withClaim("name", user.getName())
+                    .withExpiresAt(expirationDate())
+                    .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token jwt", exception);
+            throw new RuntimeException("Error generating JWT token", exception);
         }
     }
 
-    public String getSubject(String tokenJWT) {
+    public String getSubject(String jwtToken) {
         try {
-            var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.require(algoritmo)
+            var algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
                     .withIssuer(ISSUER)
                     .build()
-                    .verify(tokenJWT)
+                    .verify(jwtToken)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Token JWT inválido ou expirado: " +tokenJWT);
+            throw new RuntimeException("Invalid or expired JWT token: " + jwtToken);
         }
     }
 
-    private Instant dataExpiracao() {
+    private Instant expirationDate() {
         return LocalDateTime.now().plusHours(8).toInstant(ZoneOffset.of("-03:00"));
     }
 

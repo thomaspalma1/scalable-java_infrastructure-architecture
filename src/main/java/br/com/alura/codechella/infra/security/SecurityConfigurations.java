@@ -35,10 +35,10 @@ public class SecurityConfigurations {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, "/auth").permitAll();
-                    req.requestMatchers(HttpMethod.GET, "/eventos").permitAll();
-                    req.requestMatchers(HttpMethod.GET, "/eventos/{id:[\\d+]}").permitAll();
-                    req.requestMatchers(HttpMethod.POST, "/eventos").hasRole("ADMIN");
-                    req.requestMatchers("/compras/**").hasRole("COMPRADOR");
+                    req.requestMatchers(HttpMethod.GET, "/events").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/events/{id:[\\d+]}").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/events").hasRole("ADMIN");
+                    req.requestMatchers("/purchases/**").hasRole("BUYER");
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -61,7 +61,7 @@ public class SecurityConfigurations {
         configs.addAllowedHeader("*");
         configs.addAllowedMethod("*");
 
-        // url do frontend aqui:
+        // frontend URL here:
         configs.addAllowedOrigin("*");
 
         var url = new UrlBasedCorsConfigurationSource();

@@ -1,6 +1,6 @@
 package br.com.alura.codechella.infra.security;
 
-import br.com.alura.codechella.domain.autenticacao.repository.UsuarioRepository;
+import br.com.alura.codechella.domain.authentication.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,29 +16,29 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final UsuarioRepository usuarioRepository;
+    private final UserRepository userRepository;
 
-    public SecurityFilter(TokenService tokenService, UsuarioRepository usuarioRepository) {
+    public SecurityFilter(TokenService tokenService, UserRepository userRepository) {
         this.tokenService = tokenService;
-        this.usuarioRepository = usuarioRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var tokenJWT = recuperarToken(request);
+        var jwtToken = retrieveToken(request);
 
-        if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var usuario = usuarioRepository.findByEmail(subject);
+        if (jwtToken != null) {
+            var subject = tokenService.getSubject(jwtToken);
+            var user = userRepository.findByEmail(subject);
 
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String recuperarToken(HttpServletRequest request) {
+    private String retrieveToken(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");
