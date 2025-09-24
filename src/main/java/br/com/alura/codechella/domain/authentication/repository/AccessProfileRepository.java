@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccessProfileRepository extends JpaRepository<AccessProfile, Long> {
 
-    AccessProfile findByNome(String nome);
+    AccessProfile findByName(String name);
 
 }
