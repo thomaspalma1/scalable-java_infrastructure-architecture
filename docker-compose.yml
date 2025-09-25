@@ -1,0 +1,24 @@
+services:
+  postgresql:
+    image: postgres:15
+    env_file: ./env/postgresql.env
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -h 127.0.0.1 -U $$POSTGRES_USER
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+    env_file: ./env/app.env
+    restart: unless-stopped
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+volumes:
+  postgresql-data:
