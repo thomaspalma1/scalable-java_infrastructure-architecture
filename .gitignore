@@ -35,3 +35,7 @@ build/
 .env
 .mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
+/env
+env/app.env
+env/postgresql.env
+/postgresql-data
