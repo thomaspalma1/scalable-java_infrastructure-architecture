@@ -3,6 +3,12 @@ spring:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
+    hikari:
+      minimum-idle: 25
+      maximum-pool-size: 50
+      connection-timeout: 10000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
   jpa:
     show-sql: false
