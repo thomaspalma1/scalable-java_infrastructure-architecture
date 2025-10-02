@@ -3,6 +3,8 @@ package br.com.alura.codechella.domain.event.vo;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 
+import java.io.Serializable;
+
 @Embeddable
 public record Address(
         @NotBlank(message = "City is required!")
@@ -17,4 +19,4 @@ public record Address(
         String zipCode,
         String number,
         String complement
-) {}
+) implements Serializable {}

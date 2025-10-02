@@ -2,6 +2,7 @@ package br.com.alura.codechella.domain.event.vo;
 
 import br.com.alura.codechella.domain.event.entity.Event;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record EventData(
@@ -11,7 +12,7 @@ public record EventData(
         LocalDateTime date,
         EventCategory category,
         Address address
-) {
+) implements Serializable {
 
     public EventData(Event event) {
         this(
