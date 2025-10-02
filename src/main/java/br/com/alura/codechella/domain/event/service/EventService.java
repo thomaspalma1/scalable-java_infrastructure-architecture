@@ -7,6 +7,7 @@ import br.com.alura.codechella.domain.event.repository.EventRepository;
 import br.com.alura.codechella.domain.event.vo.EventRegistrationData;
 import br.com.alura.codechella.domain.event.vo.TicketRegistrationData;
 import br.com.alura.codechella.domain.event.vo.EventData;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class EventService {
         return upcomingEvents.stream().map(EventData::new).toList();
     }
 
+    @CacheEvict(value = "upcomingEvents", allEntries = true)
     public EventData register(EventRegistrationData registrationData) {
         var eventAlreadyExists = eventRepository.existsByNameIgnoringCase(registrationData.name());
         if (eventAlreadyExists) {
