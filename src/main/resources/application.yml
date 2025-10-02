@@ -13,6 +13,10 @@ spring:
       hibernate:
         format_sql: true
 
+  redis:
+    host: redis
+    port: 6379
+
 app:
   security:
     jwt:
